@@ -132,9 +132,9 @@
     <ClInclude Include="Tensor.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConvLayer.cpp" />
     <ClCompile Include="ConvLayer.hpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="PoolLayer.hpp" />
     <ClCompile Include="Tensor.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

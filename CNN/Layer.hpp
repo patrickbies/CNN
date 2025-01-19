@@ -9,7 +9,7 @@ public:
 	Layer() : input(nullptr), output(nullptr) {};
 	virtual ~Layer() {}
 
-	void serInput(Tensor* _input) {
+	void setInput(Tensor* _input) {
 		input = _input;
 	}
 
@@ -22,7 +22,7 @@ public:
 	}
 	
 	virtual void initialize() = 0;
-	virtual Tensor forward(const Tensor& input) = 0;
+	virtual void forward() = 0;
 	virtual Tensor backward(const Tensor& gradOutput) { // optional
 		throw std::runtime_error("n/a for this layer.");
 	}
