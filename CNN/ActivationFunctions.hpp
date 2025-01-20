@@ -4,18 +4,50 @@
 #include <numeric>
 
 class ActivationFunctions {
+private: 
+    static float sig(float a) {
+        return 1.0f / (1.0f + exp(-a));
+    }
+
 public:
+    enum TYPES {
+        RELU,
+        SOFTMAX,
+        SIGMOID,
+        NONE
+    };
+
     // ReLU activation
     static Tensor relu(const Tensor& a) {
         Tensor result = a;
-        result.apply([](float b) { return std::max(0.0f, b); });
+        result.apply([](float b) { 
+            return std::max(0.0f, b); 
+        });
         return result;
     }
 
     // Derivative of ReLU
     static Tensor relu_derivative(const Tensor& a) {
         Tensor result = a;
-        result.apply([](float b) { return b > 0.0f ? 1.0f : 0.0f; });
+        result.apply([](float b) { 
+            return b > 0.0f ? 1.0f : 0.0f; 
+        });
+        return result;
+    }
+
+    // Sigmoid activation
+    static Tensor sigmoid(const Tensor& a) {
+        Tensor result = a;
+        result.apply([](float b) {return sig(b); });
+        return result;
+    }
+
+    // Derivative of Sigmoid:
+    static Tensor sigmoid_derivative(const Tensor& a) {
+        Tensor result = a;
+        result.apply([](float b) { 
+            return sig(b) * (1 - sig(b));
+        });
         return result;
     }
 
@@ -25,17 +57,14 @@ public:
         std::vector<size_t> shape = a.getShape();
         size_t size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>());
 
-        // Find the maximum value for numerical stability
         float max_value = *std::max_element(a.data.begin(), a.data.end());
 
-        // Compute exponentials and their sum
         float summation = 0.0f;
         for (size_t i = 0; i < size; i++) {
             result.data[i] = std::exp(a.data[i] - max_value);
             summation += result.data[i];
         }
 
-        // Normalize
         for (size_t i = 0; i < size; i++) {
             result.data[i] /= summation;
         }
@@ -49,7 +78,6 @@ public:
         std::vector<size_t> shape = a.getShape();
         size_t size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>());
 
-        // create a jacobian matrix
         Tensor jacobian({ size, size });
 
         for (size_t i = 0; i < size; i++) {

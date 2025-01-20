@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.hpp" />
-    <ClInclude Include="ActivationLayer.hpp" />
+    <ClInclude Include="Initializer.hpp" />
     <ClInclude Include="Layer.hpp" />
     <ClInclude Include="Tensor.hpp" />
   </ItemGroup>

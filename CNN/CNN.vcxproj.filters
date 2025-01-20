@@ -35,10 +35,10 @@
     <ClInclude Include="Tensor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ActivationLayer.hpp">
+    <ClInclude Include="ActivationFunctions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ActivationFunctions.hpp">
+    <ClInclude Include="Initializer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

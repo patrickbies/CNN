@@ -1,4 +1,5 @@
 #include "Layer.hpp"
+#include "Initializer.hpp"
 
 class ConvLayer : public Layer {
 private:
@@ -41,14 +42,30 @@ public:
 		padding(padding) {}
 	
 	void initialize() override {
-		// TODO: initialize random weights and biases
-
 		const std::vector<size_t> input_shape = input->getShape();
 
 		size_t outh = (input_shape[2] + 2 * padding - filter_height) / stride + 1;
 		size_t outw = (input_shape[3] + 2 * padding - filter_width) / stride + 1;
 
 		output = new Tensor({ input_shape[0], num_filters, outh, outw });
+
+		size_t filter_size = filters.data.size();
+		size_t output_size = input_shape[0] * num_filters * outh * outw;
+
+		switch (activation_function) {
+		case (ActivationFunctions::TYPES::RELU):
+			filters.apply([filter_size](float) { return Initializer::he_init(filter_size); });
+			break;
+
+		case (ActivationFunctions::TYPES::SIGMOID):
+		case(ActivationFunctions::TYPES::SOFTMAX):
+			filters.apply([filter_size, output_size](float) { return Initializer::xavier_init(filter_size, output_size); });
+			break;
+
+		default:
+			filters.apply([filter_size](float) { return Initializer::uniform(filter_size); });
+			break;
+		}
 	}
 
 	void forward() override {
