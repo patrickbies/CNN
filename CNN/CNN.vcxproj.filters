@@ -18,21 +18,18 @@
     <ClCompile Include="ConvLayer.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PoolLayer.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="DenseLayer.hpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Layer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tensor.hpp">

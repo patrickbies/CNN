@@ -128,12 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Layer.hpp" />
-    <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="Tensor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvLayer.hpp" />
-    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="DenseLayer.hpp" />
     <ClCompile Include="PoolLayer.hpp" />
     <ClCompile Include="Tensor.cpp" />
   </ItemGroup>
