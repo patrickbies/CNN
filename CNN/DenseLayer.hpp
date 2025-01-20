@@ -5,21 +5,47 @@ private:
 	Tensor weights;
 	Tensor biases;
 	size_t output_size;
-	size_t input_size;
+	size_t input_size = 0;
+	size_t num_batches = 0;
+
+	std::vector<size_t> flatBatchIndex(size_t b, size_t ind) {
+		std::vector<size_t> s = input->getShape();
+
+		size_t width = s[3];
+		size_t height = s[2];
+		size_t channels = s[1];
+
+		size_t c = ind / (height * width);     
+		size_t hw_index = ind % (height * width);
+		size_t h = hw_index / width;            
+		size_t w = hw_index % width;             
+
+		return { b, c, h, w };
+	}
 
 public: 
-	DenseLayer(size_t output_size) : Layer(), biases({ output_size }), output_size(output_size) {}
+	DenseLayer(size_t output_size) : Layer(), output_size(output_size) {}
 
 	void initialize() override {
 		std::vector<size_t> input_shape = input->getShape();	
-		input_size = std::accumulate(input_shape.begin(), input_shape.end(), 1, std::multiplies<>());
-		input->reshape({ input_size });
 
-		weights = Tensor({ input_size });
-		output = new Tensor({ output_size });
+		num_batches = input_shape[0];
+		input_size = std::accumulate(input_shape.begin() + 1, input_shape.end(), 1, std::multiplies<>());
+
+		weights = Tensor({ input_size, output_size });
+		biases = Tensor({ output_size });
+		output = new Tensor({ num_batches, output_size });
 	}
 
 	void forward() override {
-		
+		for (size_t b = 0; b < num_batches; b++) {
+			for (size_t i = 0; i < output_size; i++) {
+				float sum = biases({ i });
+				for (size_t j = 0; j < input_size; j++) {
+					sum += (*input)(flatBatchIndex(b, j)) * weights({ j, i });
+				}
+				(*output)({ b, i }) = sum;
+			}
+		}
 	}
 };

@@ -6,7 +6,6 @@
 
 class Tensor {
 private: 
-	std::vector<float> data;
 	std::vector<size_t> shape;
 	std::vector<size_t> strides;
 
@@ -14,6 +13,8 @@ private:
 	size_t flatten(const std::vector<size_t>& indices) const;
 
 public: 
+	std::vector<float> data;
+
 	Tensor() = default;
 
 	// next few functions and operators implemented in header for ease:
