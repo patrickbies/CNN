@@ -71,9 +71,21 @@ public:
 
         return result;
     }
+    
+    // Derivative of softmax (diagonals of jacobian): 
+    static Tensor softmax_derivative(const Tensor& a) {
+        Tensor _sm = softmax(a);
+        Tensor res = Tensor(a.getShape());
+
+        for (size_t i = 0; i < a.data.size(); i++) {
+            res.data[i] = _sm.data[i] * (1 - _sm.data[i]);
+        }
+
+        return res;
+    }
 
     // Jacobian of softmax
-    static Tensor softmax_derivative(const Tensor& a) {
+    static Tensor softmax_jacobian(const Tensor& a) {
         Tensor softmax_output = softmax(a);
         std::vector<size_t> shape = a.getShape();
         size_t size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>());

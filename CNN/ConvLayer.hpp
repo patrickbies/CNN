@@ -1,5 +1,4 @@
 #include "Layer.hpp"
-#include "Initializer.hpp"
 
 class ConvLayer : public Layer {
 private:
@@ -97,5 +96,9 @@ public:
 				}
 			}
 		}
+	}
+
+	Tensor backward(const Tensor& gradOutput) {
+
 	}
 };

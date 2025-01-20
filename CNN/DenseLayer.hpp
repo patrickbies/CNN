@@ -35,6 +35,23 @@ public:
 		weights = Tensor({ input_size, output_size });
 		biases = Tensor({ output_size });
 		output = new Tensor({ num_batches, output_size });
+
+		size_t _is = input_size, _os = output_size;
+
+		switch (activation_function) {
+		case (ActivationFunctions::TYPES::RELU):
+			weights.apply([_is](float) { return Initializer::he_init(_is); });
+			break;
+
+		case (ActivationFunctions::TYPES::SIGMOID):
+		case(ActivationFunctions::TYPES::SOFTMAX):
+			weights.apply([_is, _os](float) { return Initializer::xavier_init(_is, _os); });
+			break;
+
+		default:
+			weights.apply([_is](float) { return Initializer::uniform(_is); });
+			break;
+		}
 	}
 
 	void forward() override {

@@ -18,9 +18,6 @@
     <ClCompile Include="ConvLayer.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tensor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PoolLayer.hpp">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -39,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Initializer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivationLayer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

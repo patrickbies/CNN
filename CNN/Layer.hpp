@@ -1,5 +1,6 @@
 #include "Tensor.hpp"
 #include "ActivationFunctions.hpp"
+#include "Initializer.hpp"
 
 class Layer {
 protected: 
@@ -33,7 +34,5 @@ public:
 	
 	virtual void initialize() = 0;
 	virtual void forward() = 0;
-	virtual Tensor backward(const Tensor& gradOutput) {
-		throw std::runtime_error("not implemented");
-	}
+	virtual Tensor backward(const Tensor& gradOutput) = 0;
 };
