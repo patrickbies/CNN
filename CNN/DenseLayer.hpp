@@ -65,4 +65,33 @@ public:
 			}
 		}
 	}
+
+	Tensor backward(const Tensor& gradOutput) override {
+		Tensor weight_gradient = Tensor({ input_size, output_size });
+		Tensor bias_gradient = Tensor({ output_size });
+		Tensor input_gradient = Tensor(input->getShape());
+
+		for (size_t b = 0; b < num_batches; b++) {
+			for (size_t i = 0; i < output_size; i++) {
+				bias_gradient({ i }) += gradOutput({ b, i });
+				for (size_t j = 0; j < input_size; j++) {
+					weight_gradient({ j, i }) += (*input)(flatBatchIndex(b, j)) * gradOutput({ b, i });
+				}
+			}
+		}
+
+		for (size_t b = 0; b < num_batches; b++) {
+			for (size_t j = 0; j < input_size; j++) {
+				float sum = 0.0f;
+				for (size_t i = 0; i < output_size; i++) {
+					sum += weights({ j, i }) * gradOutput({ b, i });
+				}
+				input_gradient(flatBatchIndex(b, j)) = sum;
+			}
+		}
+
+		// utilize weight_gradient and bias_gradient in optimizer;
+
+		return input_gradient; 
+	}
 };

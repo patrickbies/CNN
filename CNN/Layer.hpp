@@ -34,5 +34,5 @@ public:
 	
 	virtual void initialize() = 0;
 	virtual void forward() = 0;
-	virtual Tensor backward(const Tensor& gradOutput) = 0;
+	virtual Tensor backward(const Tensor& gradOutput) = 0; // gradoutput should be size of output
 };
