@@ -98,7 +98,68 @@ public:
 		}
 	}
 
-	Tensor backward(const Tensor& gradOutput) {
+	Tensor backward(const Tensor& gradOutput) override {
+		Tensor weight_gradient = Tensor(filters.getShape());
+		Tensor bias_gradient = Tensor({num_filters});
+		Tensor input_gradient = Tensor(input->getShape());
 
+		std::vector<size_t> input_shape = input->getShape();
+		std::vector<size_t> output_shape = output->getShape();
+
+		for (size_t b = 0; b < input_shape[0]; b++) {
+			for (size_t c = 0; c < input_shape[1]; c++) {
+				for (size_t i = 0; i < input_shape[2]; i++) {
+					for (size_t j = 0; j < input_shape[3]; j++) {
+						for (size_t o = 0; o < num_filters; o++) {
+							for (size_t p = 0; p < output_shape[2]; p++) {
+								for (size_t q = 0; q < output_shape[3]; q++) {
+									size_t h_start = p * stride;
+									size_t w_start = q * stride;
+									if (i >= h_start && i < h_start + filter_height &&
+										j >= w_start && j < w_start + filter_width) {
+										size_t fh = i - h_start;
+										size_t fw = j - w_start;
+										
+										input_gradient({ b, c, i, j }) +=
+											gradOutput({ b, o, p, q }) * filters({ o, c, fh, fw });
+									}
+								}
+							}
+						}
+					}
+				}
+			}	
+		}
+
+		for (size_t o = 0; o < num_filters; o++) {
+			for (size_t c = 0; c < input_shape[1]; c++) {
+				for (size_t fh = 0; fh < filter_height; fh++) {
+					for (size_t fw = 0; fw < filter_width; fw++) {
+						for (size_t b = 0; b < input_shape[0]; b++) {
+							for (size_t p = 0; p < output_shape[2]; p++) {
+								for (size_t q = 0; q < output_shape[3]; q++) {
+									weight_gradient({ o, c, fh, fw }) +=
+										gradOutput({ b, o, p, q }) * (*input)({ b, c, p * stride + fh, q * stride + fw });
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (size_t o = 0; o < num_filters; o++) {
+			for (size_t b = 0; b < input_shape[0]; b++) {
+				for (size_t p = 0; p < output_shape[2]; p++) {
+					for (size_t q = 0; q < output_shape[3]; q++) {
+						bias_gradient({ o }) += gradOutput({b, o, p, q});
+					}
+				}
+			}
+		}
+
+		// use bias_gradient and weight_gradient in optimizer; 
+
+		return input_gradient;
 	}
 };
