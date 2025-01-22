@@ -129,13 +129,19 @@
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.hpp" />
     <ClInclude Include="ActivationLayer.hpp" />
+    <ClInclude Include="CrossEntropyLoss.hpp" />
     <ClInclude Include="Initializer.hpp" />
     <ClInclude Include="Layer.hpp" />
+    <ClInclude Include="Loss.hpp" />
+    <ClInclude Include="Network.hpp" />
+    <ClInclude Include="Optimizer.hpp" />
+    <ClInclude Include="SGD.hpp" />
     <ClInclude Include="Tensor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvLayer.hpp" />
     <ClCompile Include="DenseLayer.hpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="PoolLayer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

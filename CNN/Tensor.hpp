@@ -59,12 +59,47 @@ public:
 
 		Tensor result(shape);
 
-		for (size_t i = 0; i < data.size(); ++i) {
+		for (size_t i = 0; i < data.size(); i++) {
 			result.data[i] = data[i] * other.data[i];
 		}
 
 		return result;
 	}
+
+	Tensor operator*(float other) const {
+		Tensor result(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] * other;
+		}
+
+		return result;
+	}
+
+	void operator-=(const Tensor& other) {
+		if (shape != other.getShape()) {
+			throw std::invalid_argument("Shape mismatch: Tensors must have the same shape for element-wise subtraction");
+		}
+
+		for (size_t i = 0; i < data.size(); i++) {
+			data[i] -= other.data[i];
+		}
+	}
+
+	const Tensor operator-(const Tensor& other) const {
+		if (shape != other.getShape()) {
+			throw std::invalid_argument("Shape mismatch: Tensors must have the same shape for element-wise subtraction");
+		}
+
+		Tensor result = Tensor(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] - other.data[i];
+		}
+
+		return result;
+	}
+
 	const std::vector<size_t>& getShape() const {
 		return shape;
 	}

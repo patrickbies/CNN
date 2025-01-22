@@ -16,6 +16,7 @@ public:
 		case (ActivationFunctions::TYPES::SIGMOID):
 			(*output) = ActivationFunctions::sigmoid(*input);
 			break;
+		case (ActivationFunctions::TYPES::SOFTMAX_CEL):
 		case (ActivationFunctions::TYPES::SOFTMAX):
 			(*output) = ActivationFunctions::softmax(*input);
 			break;
@@ -36,6 +37,8 @@ public:
 			break;
 		case (ActivationFunctions::TYPES::SOFTMAX):
 			res = gradOutput * ActivationFunctions::softmax_derivative(*input);
+			break;
+		case (ActivationFunctions::TYPES::SOFTMAX_CEL):
 			break;
 		default:
 			throw std::invalid_argument("Unsupported activation function.");

@@ -14,6 +14,7 @@ public:
         RELU,
         SOFTMAX,
         SIGMOID,
+        SOFTMAX_CEL, // should be used when a Cross Entropy Loss will be used and this is the last layer
         NONE
     };
 
