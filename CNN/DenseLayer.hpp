@@ -24,7 +24,7 @@ private:
 	}
 
 public: 
-	DenseLayer(size_t output_size) : Layer(), output_size(output_size) {}
+	DenseLayer(size_t output_size, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) : Layer(_ac), output_size(output_size) {}
 
 	void initialize() override {
 		std::vector<size_t> input_shape = input->getShape();	

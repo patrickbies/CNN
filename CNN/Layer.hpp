@@ -9,7 +9,7 @@ protected:
 	ActivationFunctions::TYPES activation_function;
 
 public: 
-	Layer() : input(nullptr), output(nullptr), activation_function(ActivationFunctions::TYPES::NONE) {};
+	Layer(ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) : input(nullptr), output(nullptr), activation_function(_ac) {};
 	virtual ~Layer() {}
 
 	void setInput(Tensor* _input) {

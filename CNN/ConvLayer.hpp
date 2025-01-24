@@ -30,8 +30,9 @@ private:
 
 public:
 	ConvLayer(size_t num_filters, size_t channels, size_t filter_width, 
-			  size_t filter_height, size_t stride = 1, size_t padding = 0) :
-		Layer(),
+			  size_t filter_height, size_t stride = 1, size_t padding = 0, 
+			  ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) :
+		Layer(_ac),
 		filters({num_filters, channels, filter_width, filter_height}),
 		biases({num_filters}),
 		num_filters(num_filters),

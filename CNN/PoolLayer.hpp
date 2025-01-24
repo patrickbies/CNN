@@ -8,8 +8,8 @@ private:
     Tensor max_indices;
 
 public:
-    PoolLayer(size_t window_size, size_t stride = 1)
-        : Layer(), window_size(window_size), stride(stride) {}
+    PoolLayer(size_t window_size, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE, size_t stride = 1)
+        : Layer(_ac), window_size(window_size), stride(stride) {}
 
     void initialize() override {
         const std::vector<size_t> input_shape = input->getShape();

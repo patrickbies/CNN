@@ -1,49 +1,67 @@
 #include "Tensor.hpp"
 #include <fstream>
-#include <string>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <stdexcept>
+#include <utility>
 
 class MNISTToTensor {
-    // returns <data, labels> (function specifically for MNIST CSV dataset):
-	static std::pair<Tensor, Tensor> parseCSV(const char* filename) {
-		std::fstream fin;
+public:
+    // Parse MNIST CSV file and return a pair of tensors (data, labels)
+    static std::pair<Tensor, Tensor> parseCSV(const char* filename) {
+        std::ifstream fin(filename);
+        if (!fin.is_open()) {
+            throw std::runtime_error("Failed to open the file.");
+        }
 
-		fin.open(filename, std::ios::in);
+        std::vector<std::vector<float>> rows;
+        std::string line;
 
-		std::vector<std::vector<float>> row;
-        std::string line, word, temp;
-        size_t i = 0;
-
-        while (fin >> temp)
-        {
-            row.clear();
-
-            std::getline(fin, line);
-            std::stringstream s(line);
+        while (std::getline(fin, line)) {
+            std::stringstream ss(line);
             std::string token;
+            std::vector<float> row;
 
-            while (std::getline(s, token, ',')) {
-                if (!row[i].size()) row[i].push_back(static_cast<float>(std::stoi(token)));
-                else row[i].push_back(static_cast<float>(std::stoi(token)) / 255.0f); // pixel values b/w 0 and 1;
+            while (std::getline(ss, token, ',')) {
+                row.push_back(static_cast<float>(std::stoi(token)));
             }
 
-            i++;
+            rows.push_back(row);
         }
 
         fin.close();
-		
-        Tensor data({row.size(), 1, 28, 28}), labels({row.size(), 10});// initialized all to 0;
 
-        for (size_t i = 0; i < row.size(); i++) {
-            labels({ i, static_cast<unsigned long long>(row[i][0]) }) = 1.0f;
+        if (rows.empty()) {
+            throw std::runtime_error("The CSV file is empty.");
+        }
 
-            for (size_t h = 0; h < 28; h++) {
-                for (size_t w = 0; w < 28; w++) {
-                    data({ i, 1, h, w }) = row[i][1 + h * 28 + w];
-                }
+        size_t num_samples = rows.size();
+        size_t input_size = 28 * 28;
+
+        Tensor data({ num_samples, 1, 28, 28 }, 0.0f);
+        Tensor labels({ num_samples, 10 }, 0.0f);      
+
+        for (size_t i = 0; i < num_samples; ++i) {
+            const auto& row = rows[i];
+
+            if (row.size() != input_size + 1) {
+                throw std::runtime_error("Row size does not match expected MNIST format.");
+            }
+
+            int label = static_cast<int>(row[0]);
+            if (label < 0 || label >= 10) {
+                throw std::runtime_error("Invalid label value in the dataset.");
+            }
+            labels({ i, static_cast<size_t>(label) }) = 1.0f;
+
+            for (size_t j = 0; j < input_size; ++j) {
+                size_t row_index = j / 28;
+                size_t col_index = j % 28;
+                data({ i, 0, row_index, col_index }) = row[j + 1] / 255.0f;
             }
         }
 
         return { data, labels };
-	}
+    }
 };

@@ -2,9 +2,7 @@
 
 class ActivationLayer : public Layer {
 public:
-	ActivationLayer(ActivationFunctions::TYPES _activation_function) : Layer() {
-		setActivationFunction(_activation_function);
-	}
+	ActivationLayer(ActivationFunctions::TYPES _activation_function) : Layer(_activation_function) {}
 
 	void initialize() override {}
 
