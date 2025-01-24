@@ -16,92 +16,77 @@ public:
         RELU,
         SOFTMAX,
         SIGMOID,
-        SOFTMAX_CEL, // should be used when a Cross Entropy Loss will be used and this is the last layer
+        SOFTMAX_CEL, // should be used when a Cross Entropy Loss will be used, and this is the last layer
         NONE
     };
 
     // ReLU activation
-    static Tensor relu(const Tensor& a) {
-        Tensor result = a;
-        result.apply([](float b) { 
+    static void relu(Tensor& location, const Tensor& a) {
+        location.apply([](float b) {
             return std::max(0.0f, b); 
         });
-        return result;
     }
 
     // Derivative of ReLU
-    static Tensor relu_derivative(const Tensor& a) {
-        Tensor result = a;
-        result.apply([](float b) { 
+    static void relu_derivative(Tensor& location, const Tensor& a) {
+        location.apply([](float b) {
             return b > 0.0f ? 1.0f : 0.0f; 
         });
-        return result;
     }
 
     // Sigmoid activation
-    static Tensor sigmoid(const Tensor& a) {
-        Tensor result = a;
-        result.apply([](float b) {return sig(b); });
-        return result;
+    static void sigmoid(Tensor& location, const Tensor& a) {
+        location.apply([](float b) {return sig(b); });
     }
 
     // Derivative of Sigmoid:
-    static Tensor sigmoid_derivative(const Tensor& a) {
-        Tensor result = a;
-        result.apply([](float b) { 
+    static void sigmoid_derivative(Tensor& location, const Tensor& a) {
+        location.apply([](float b) { 
             return sig(b) * (1 - sig(b));
         });
-        return result;
     }
 
     // Softmax activation
-    static Tensor softmax(const Tensor& a) {
-        Tensor result = a;
+    static void softmax(Tensor& location, const Tensor& a) {
         std::vector<size_t> shape = a.getShape();
-        size_t size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>());
 
         float max_value = *std::max_element(a.data.begin(), a.data.end());
 
         float summation = 0.0f;
-        for (size_t i = 0; i < size; i++) {
-            result.data[i] = std::exp(a.data[i] - max_value);
-            summation += result.data[i];
+        for (size_t i = 0; i < a.data.size(); i++) {
+            location.data[i] = std::exp(a.data[i] - max_value);
+            summation += location.data[i];
         }
 
-        for (size_t i = 0; i < size; i++) {
-            result.data[i] /= summation;
+        for (size_t i = 0; i < a.data.size(); i++) {
+            location.data[i] /= summation;
         }
-
-        return result;
     }
     
     // Derivative of softmax (diagonals of jacobian): 
-    static Tensor softmax_derivative(const Tensor& a) {
-        Tensor _sm = softmax(a);
-        Tensor res = Tensor(a.getShape());
+    static void softmax_derivative(Tensor& location, const Tensor& a) {
+        Tensor _sm = Tensor(a.getShape());
+        softmax(_sm, a);
 
         for (size_t i = 0; i < a.data.size(); i++) {
-            res.data[i] = _sm.data[i] * (1 - _sm.data[i]);
+            location.data[i] = _sm.data[i] * (1 - _sm.data[i]);
         }
-
-        return res;
     }
 
     // Jacobian of softmax
     static Tensor softmax_jacobian(const Tensor& a) {
-        Tensor softmax_output = softmax(a);
-        std::vector<size_t> shape = a.getShape();
-        size_t size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>());
+        Tensor _sm = Tensor(a.getShape());
+        softmax(_sm, a);
 
-        Tensor jacobian({ size, size });
+        Tensor jacobian({ a.data.size(), a.data.size() });
 
-        for (size_t i = 0; i < size; i++) {
-            for (size_t j = 0; j < size; j++) {
+        for (size_t i = 0; i < a.data.size(); i++) {
+            for (size_t j = 0; j < a.data.size(); j++) {
                 if (i == j) {
-                    jacobian({ i, j }) = softmax_output.data[i] * (1 - softmax_output.data[i]);
+                    jacobian({ i, j }) = _sm.data[i] * (1 - _sm.data[i]);
                 }
                 else {
-                    jacobian({ i, j }) = -softmax_output.data[i] * softmax_output.data[j];
+                    jacobian({ i, j }) = -_sm.data[i] * _sm.data[j];
                 }
             }
         }

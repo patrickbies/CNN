@@ -10,16 +10,15 @@ private:
     Tensor max_indices;
 
 public:
-    PoolLayer(size_t window_size, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE, size_t stride = 1)
+    PoolLayer(size_t window_size, size_t stride = 1, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE)
         : Layer(_ac), window_size(window_size), stride(stride) {}
 
-    void initialize() override {
-        const std::vector<size_t> input_shape = input->getShape();
-
+    void initialize(std::vector<size_t> input_shape) override {
         size_t output_height = (input_shape[2] - window_size) / stride + 1;
         size_t output_width = (input_shape[3] - window_size) / stride + 1;
 
         output = new Tensor({ input_shape[0], input_shape[1], output_height, output_width });
+        input_gradient = new Tensor(input_shape);
         max_indices = Tensor(output->getShape(), -1);
     }
 
@@ -60,9 +59,7 @@ public:
         }
     }
 
-    Tensor backward(const Tensor& gradOutput) override {
-        Tensor input_gradient(input->getShape(), 0.0f);
-
+    void backward(const Tensor& gradOutput) override {
         const std::vector<size_t> input_shape = input->getShape();
         const std::vector<size_t> output_shape = output->getShape();
 
@@ -73,12 +70,10 @@ public:
                         size_t flat_index = max_indices({ b, c, h, w });
                         size_t input_h = flat_index / input_shape[3];
                         size_t input_w = flat_index % input_shape[3];
-                        input_gradient({ b, c, input_h, input_w }) += gradOutput({ b, c, h, w });
+                        (*input_gradient)({ b, c, input_h, input_w }) += gradOutput({ b, c, h, w });
                     }
                 }
             }
         }
-
-        return input_gradient;
     }
 };

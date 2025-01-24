@@ -69,12 +69,4 @@
       <Filter>Header Files\MNIST Parser</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_train.csv">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_test.csv">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>

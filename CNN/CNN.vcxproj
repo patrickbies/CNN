@@ -145,10 +145,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PoolLayer.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_test.csv" />
-    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_train.csv" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

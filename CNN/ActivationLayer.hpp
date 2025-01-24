@@ -6,44 +6,47 @@ class ActivationLayer : public Layer {
 public:
 	ActivationLayer(ActivationFunctions::TYPES _activation_function) : Layer(_activation_function) {}
 
-	void initialize() override {}
+	void initialize(std::vector<size_t> input_shape) override {
+		output = new Tensor(input_shape);
+		input_gradient = new Tensor(input_shape);
+	}
 
 	void forward() override {
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
-			(*output) = ActivationFunctions::relu(*input);
+			ActivationFunctions::relu(*output, *input);
 			break;
 		case (ActivationFunctions::TYPES::SIGMOID):
-			(*output) = ActivationFunctions::sigmoid(*input);
+			ActivationFunctions::sigmoid(*output, *input);
 			break;
 		case (ActivationFunctions::TYPES::SOFTMAX_CEL):
 		case (ActivationFunctions::TYPES::SOFTMAX):
-			(*output) = ActivationFunctions::softmax(*input);
+			ActivationFunctions::softmax(*output, *input);
 			break;
 		default:
 			throw std::invalid_argument("Unsupported activation function.");
 		}
 	}
 
-	Tensor backward(const Tensor& gradOutput) override {
-		Tensor res = gradOutput;
-
+	void backward(const Tensor& gradOutput) override {
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
-			res = gradOutput * ActivationFunctions::relu_derivative(*input);
+			ActivationFunctions::relu_derivative(*input_gradient, *input);
+			*input_gradient = gradOutput * *input_gradient; 
 			break;
 		case (ActivationFunctions::TYPES::SIGMOID):
-			res = gradOutput * ActivationFunctions::sigmoid_derivative(*input);
+			ActivationFunctions::sigmoid_derivative(*input_gradient, *input);
+			*input_gradient = gradOutput * *input_gradient;
 			break;
 		case (ActivationFunctions::TYPES::SOFTMAX):
-			res = gradOutput * ActivationFunctions::softmax_derivative(*input);
+			ActivationFunctions::softmax_derivative(*input_gradient, *input);
+			*input_gradient = gradOutput * *input_gradient;
 			break;
 		case (ActivationFunctions::TYPES::SOFTMAX_CEL):
+			*input_gradient = gradOutput;
 			break;
 		default:
 			throw std::invalid_argument("Unsupported activation function.");
 		}
-
-		return res;
 	}
 };

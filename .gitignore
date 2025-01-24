@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# MNIST Dataset
+CNN/mnist_train.csv
+CNN/mnist_test.csv

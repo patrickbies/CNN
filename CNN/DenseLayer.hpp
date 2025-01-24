@@ -4,41 +4,47 @@
 
 class DenseLayer : public Layer {
 private: 
-	Tensor weights;
-	Tensor biases;
 	size_t output_size;
 	size_t input_size = 0;
 	size_t num_batches = 0;
 
 	std::vector<size_t> flatBatchIndex(size_t b, size_t ind) {
-		std::vector<size_t> s = input->getShape();
+		const std::vector<size_t>& shape = input->getShape();
+		if (shape.size() < 2) {
+			throw std::invalid_argument("Tensor shape must have at least two dimensions (batch dimension and more).");
+		}
 
-		size_t width = s[3];
-		size_t height = s[2];
-		size_t channels = s[1];
+		size_t numDimensions = shape.size();
+		std::vector<size_t> coordinates(numDimensions, 0);
 
-		size_t c = ind / (height * width);     
-		size_t hw_index = ind % (height * width);
-		size_t h = hw_index / width;            
-		size_t w = hw_index % width;             
+		coordinates[0] = b;
 
-		return { b, c, h, w };
+		size_t remainingIndex = ind;
+		for (size_t dim = numDimensions - 1; dim > 0; --dim) {
+			size_t stride = shape[dim];
+			coordinates[dim] = remainingIndex % stride; 
+			remainingIndex /= stride;                  
+		}
+
+		if (remainingIndex != 0) {
+			throw std::out_of_range("Flat index exceeds tensor dimensions.");
+		}
+
+		return coordinates;
 	}
 
 public: 
 	DenseLayer(size_t output_size, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) : Layer(_ac), output_size(output_size) {}
 
-	void initialize() override {
-		std::vector<size_t> input_shape = input->getShape();	
-
+	void initialize(std::vector<size_t> input_shape) override {
 		num_batches = input_shape[0];
 		input_size = std::accumulate(input_shape.begin() + 1, input_shape.end(), 1, std::multiplies<>());
 
+		size_t _is = input_size;
+		size_t _os = output_size;
+
 		weights = Tensor({ input_size, output_size });
 		biases = Tensor({ output_size });
-		output = new Tensor({ num_batches, output_size });
-
-		size_t _is = input_size, _os = output_size;
 
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
@@ -54,6 +60,11 @@ public:
 			weights.apply([_is](float) { return Initializer::uniform(_is); });
 			break;
 		}
+
+		weight_gradient = new Tensor({ input_size, output_size });
+		bias_gradient = new Tensor({ output_size });
+		input_gradient = new Tensor(input_shape);
+		output = new Tensor({ num_batches, output_size });
 	}
 
 	void forward() override {
@@ -68,16 +79,12 @@ public:
 		}
 	}
 
-	Tensor backward(const Tensor& gradOutput) override {
-		Tensor weight_gradient = Tensor({ input_size, output_size });
-		Tensor bias_gradient = Tensor({ output_size });
-		Tensor input_gradient = Tensor(input->getShape());
-
+	void backward(const Tensor& gradOutput) override {
 		for (size_t b = 0; b < num_batches; b++) {
 			for (size_t i = 0; i < output_size; i++) {
-				bias_gradient({ i }) += gradOutput({ b, i });
+				(*bias_gradient)({ i }) += gradOutput({ b, i });
 				for (size_t j = 0; j < input_size; j++) {
-					weight_gradient({ j, i }) += (*input)(flatBatchIndex(b, j)) * gradOutput({ b, i });
+					(*weight_gradient)({ j, i }) += (*input)(flatBatchIndex(b, j)) * gradOutput({ b, i });
 				}
 			}
 		}
@@ -88,12 +95,8 @@ public:
 				for (size_t i = 0; i < output_size; i++) {
 					sum += weights({ j, i }) * gradOutput({ b, i });
 				}
-				input_gradient(flatBatchIndex(b, j)) = sum;
+				(*input_gradient)(flatBatchIndex(b, j)) = sum;
 			}
 		}
-
-		// utilize weight_gradient and bias_gradient in optimizer;
-
-		return input_gradient; 
 	}
 };
