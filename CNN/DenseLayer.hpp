@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Layer.hpp"
 
 class DenseLayer : public Layer {

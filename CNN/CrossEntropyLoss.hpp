@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Loss.hpp"
 #include <cmath>
 

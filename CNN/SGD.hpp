@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Optimizer.hpp"
 
 class SGD : public Optimizer {	

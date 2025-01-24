@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cfloat>
 #include "Layer.hpp"
 

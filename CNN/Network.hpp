@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Layer.hpp"
 #include "Loss.hpp"
 #include "Optimizer.hpp"

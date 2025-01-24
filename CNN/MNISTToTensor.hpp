@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Tensor.hpp"
 #include <fstream>
 #include <sstream>
