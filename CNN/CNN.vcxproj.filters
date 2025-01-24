@@ -13,51 +13,68 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\CNN Headers">
+      <UniqueIdentifier>{c815a115-8ee1-493f-82c3-fbe730a118a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MNIST Parser">
+      <UniqueIdentifier>{ce4cd200-cb19-4466-969a-8f10972529ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConvLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PoolLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DenseLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ConvLayer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="DenseLayer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="PoolLayer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Layer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tensor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ActivationFunctions.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Initializer.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\CNN Headers</Filter>
     </ClInclude>
     <ClInclude Include="ActivationLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Optimizer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Network.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loss.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SGD.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\CNN Headers</Filter>
     </ClInclude>
     <ClInclude Include="CrossEntropyLoss.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\CNN Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Initializer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Loss.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Optimizer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SGD.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Tensor.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="MNISTToTensor.hpp">
+      <Filter>Header Files\MNIST Parser</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_train.csv">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_test.csv">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

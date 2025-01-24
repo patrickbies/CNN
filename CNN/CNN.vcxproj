@@ -133,6 +133,7 @@
     <ClInclude Include="Initializer.hpp" />
     <ClInclude Include="Layer.hpp" />
     <ClInclude Include="Loss.hpp" />
+    <ClInclude Include="MNISTToTensor.hpp" />
     <ClInclude Include="Network.hpp" />
     <ClInclude Include="Optimizer.hpp" />
     <ClInclude Include="SGD.hpp" />
@@ -143,6 +144,10 @@
     <ClCompile Include="DenseLayer.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PoolLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_test.csv" />
+    <None Include="..\..\..\..\OneDrive\Documents\MNIST_CSV\mnist_train.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
