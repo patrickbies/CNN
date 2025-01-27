@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="ConvLayer.hpp" />
     <ClCompile Include="DenseLayer.hpp" />
+    <ClCompile Include="FlattenLayer.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PoolLayer.hpp" />
   </ItemGroup>

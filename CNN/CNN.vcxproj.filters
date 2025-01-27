@@ -33,6 +33,9 @@
     <ClCompile Include="PoolLayer.hpp">
       <Filter>Header Files\CNN Headers</Filter>
     </ClCompile>
+    <ClCompile Include="FlattenLayer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.hpp">

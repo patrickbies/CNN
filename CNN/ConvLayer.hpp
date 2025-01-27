@@ -29,7 +29,7 @@ private:
 	}
 
 public:
-	ConvLayer(size_t num_filters, size_t channels, size_t filter_width, 
+	ConvLayer(size_t num_filters, size_t filter_width, 
 			  size_t filter_height, size_t stride = 1, size_t padding = 0, 
 			  ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) :
 		Layer(_ac),
@@ -39,11 +39,12 @@ public:
 		stride(stride),
 		padding(padding)
 	{
-		weights = Tensor({ num_filters, channels, filter_width, filter_height });
-		biases = Tensor({ num_filters });
 	}
 	
 	void initialize(std::vector<size_t> input_shape) override {
+		weights = Tensor({ num_filters, input_shape[1], filter_width, filter_height});
+		biases = Tensor({ num_filters });
+
 		size_t outh = (input_shape[2] + 2 * padding - filter_height) / stride + 1;
 		size_t outw = (input_shape[3] + 2 * padding - filter_width) / stride + 1;
 
@@ -82,7 +83,7 @@ public:
 		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t f = 0; f < num_filters; f++) {
 				for (size_t h = 0; h < output_height; h++) {
-					for (size_t w = 0; w < output_width; w++) { 
+					for (size_t w = 0; w < output_width; w++) {
 						float sum = 0.0f;
 
 						size_t h_start = h * stride;
@@ -90,8 +91,14 @@ public:
 
 						for (size_t c = 0; c < input_shape[1]; c++) {
 							for (size_t fh = 0; fh < filter_height; fh++) {
+								size_t h_index = h_start + fh;
+								if (h_index >= input_shape[2]) continue;
+
 								for (size_t fw = 0; fw < filter_width; fw++) {
-									sum += weights({ f, c, fh, fw }) * inp({ b, c, h_start + fh, w_start + fw });
+									size_t w_index = w_start + fw;
+									if (w_index >= input_shape[3]) continue;
+
+									sum += weights({ f, c, fh, fw }) * inp({ b, c, h_index, w_index });
 								}
 							}
 						}
@@ -106,6 +113,10 @@ public:
 	void backward(const Tensor& gradOutput) override {
 		std::vector<size_t> input_shape = input->getShape();
 		std::vector<size_t> output_shape = output->getShape();
+
+		input_gradient->zero();
+		weight_gradient->zero();
+		bias_gradient->zero();
 
 		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t c = 0; c < input_shape[1]; c++) {

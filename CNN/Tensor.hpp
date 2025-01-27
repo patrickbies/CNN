@@ -105,6 +105,10 @@ public:
 		return shape;
 	}
 
+	const std::vector<size_t>& getStrides() const {
+		return strides;
+	}
+
 	void reshape(const std::vector<size_t> newShape) {
 		size_t newSize = std::accumulate(newShape.begin(), newShape.end(), 1, std::multiplies<>());
 		if (newSize != data.size()) {
@@ -118,5 +122,9 @@ public:
 	Tensor& apply(std::function<float(float)> func) {
 		for (auto& a : Tensor::data) a = func(a);
 		return *this;
+	}
+
+	void zero() {
+		for (size_t i = 0; i < data.size(); i++) data[i] = 0;
 	}
 };

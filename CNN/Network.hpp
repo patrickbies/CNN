@@ -117,7 +117,7 @@ private:
 
 	void setBatch(Tensor& batch_tensor, const Tensor& data, size_t batch, size_t batch_size) {
 		const size_t total_elements_per_batch = batch_tensor.data.size();
-		const size_t start_idx = batch * batch_size * total_elements_per_batch;
+		const size_t start_idx = batch * total_elements_per_batch;
 		const size_t end_idx = start_idx + total_elements_per_batch;
 
 		if (end_idx > data.data.size()) {
