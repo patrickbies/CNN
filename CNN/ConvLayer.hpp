@@ -55,16 +55,16 @@ public:
 
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
-			weights.apply([filter_size](float) { return Initializer::he_init(filter_size); });
+			Initializer::he_init(weights, filter_size);
 			break;
 
 		case (ActivationFunctions::TYPES::SIGMOID):
 		case(ActivationFunctions::TYPES::SOFTMAX):
-			weights.apply([filter_size, output_size](float) { return Initializer::xavier_init(filter_size, output_size); });
+			Initializer::xavier_init(weights, filter_size, output_size);
 			break;
 
 		default:
-			weights.apply([filter_size](float) { return Initializer::uniform(filter_size); });
+			Initializer::uniform(weights, filter_size);
 			break;
 		}
 

@@ -22,28 +22,30 @@ public:
 
     // ReLU activation
     static void relu(Tensor& location, const Tensor& a) {
-        location.apply([](float b) {
-            return std::max(0.0f, b); 
-        });
+        for (int i = 0; i < a.data.size(); i++) {
+            location.data[i] = std::max(0.0f, a.data[i]);
+        }
     }
 
     // Derivative of ReLU
     static void relu_derivative(Tensor& location, const Tensor& a) {
-        location.apply([](float b) {
-            return b > 0.0f ? 1.0f : 0.0f; 
-        });
+        for (int i = 0; i < a.data.size(); i++) {
+            location.data[i] = a.data[i] > 0.0f ? 1.0f : 0.0f;
+        }
     }
 
     // Sigmoid activation
     static void sigmoid(Tensor& location, const Tensor& a) {
-        location.apply([](float b) {return sig(b); });
+        for (int i = 0; i < a.data.size(); i++) {
+            location.data[i] = sig(a.data[i]);
+        }
     }
 
     // Derivative of Sigmoid:
     static void sigmoid_derivative(Tensor& location, const Tensor& a) {
-        location.apply([](float b) { 
-            return sig(b) * (1 - sig(b));
-        });
+        for (int i = 0; i < a.data.size(); i++) {
+            location.data[i] = sig(a.data[i]) * (1 - sig(a.data[i]));
+        }
     }
 
     // Softmax activation
