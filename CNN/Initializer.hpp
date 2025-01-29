@@ -32,4 +32,12 @@ public:
 
 		location.apply([&dist, &gen](float a) {return dist(gen); });
 	}
+
+	static void final_layer_init(Tensor& location, size_t fan_in) {
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::normal_distribution<float> dist{ 0, std::sqrt(1.0f / fan_in) };
+
+		location.apply([&dist, &gen](float a) {return dist(gen); });
+	}
 };

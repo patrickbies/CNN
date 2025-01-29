@@ -7,16 +7,22 @@ private:
 	float beta1;
 	float beta2;
 	float epsilon;
+	size_t batch_size;
 	size_t t;
 
 	std::unordered_map<Tensor*, std::pair<Tensor, Tensor>> moments;	
 
 public:
-	Adam(float lr = 0.001, float beta1 = 0.9, float beta2 = 0.999, float epsilon = 1e-8)
-		: Optimizer(lr), beta1(beta1), beta2(beta2),
+	Adam(float lr = 0.001, size_t batch_size = 16, float beta1 = 0.9, float beta2 = 0.999, float epsilon = 1e-4)
+		: Optimizer(lr), beta1(beta1), beta2(beta2), batch_size(batch_size),
 		  epsilon(epsilon), t(0) {};
 
-	void updateWeights(Tensor& weights, const Tensor& gradients) override {
+	//void step(Tensor& weights, Tensor& biases, const Tensor& weight_grad, Tensor& bias_grad) override {
+	//	t++;
+	//	
+	//}
+
+	void updateWeights(Tensor& weights, const Tensor& gradients) override {		
 		if (!moments.count(&weights)) {
 			initialize_moments(weights);
 			std::cout << "initialized weights" << std::endl;

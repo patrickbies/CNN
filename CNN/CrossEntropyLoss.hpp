@@ -14,7 +14,8 @@ public:
 		
 		for (size_t i = 0; i < labels.getShape()[0]; i++) {
 			for (size_t j = 0; j < labels.getShape()[1]; j++) {
-				loss += labels.data[i * labels.getShape()[1] + j] * std::log(std::max(1e-7f, predictions.data[i * labels.getShape()[1] + j]));
+				const float p = std::max(std::min(predictions({ i, j }), 1.0f - 1e-12f), 1e-12f);
+				loss += labels({ i, j }) > 0 ? std::log(p) : 0;
 			}
 		}
 
@@ -26,6 +27,6 @@ public:
 			throw std::out_of_range("Labels and Predictions size do not match.");
 		}
 
-		return (predictions - labels) / labels.getShape()[0];
+		return predictions - labels;
 	};
 };

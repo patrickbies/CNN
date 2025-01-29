@@ -194,4 +194,12 @@ public:
 		}
 		return result;
 	}
+
+	Tensor clamp(float a, float b) const {
+		Tensor result(shape);
+		for (size_t i = 0; i < data.size(); ++i) {
+			result.data[i] = std::max(a, std::min(b, data[i]));
+		}
+		return result;
+	}
 };

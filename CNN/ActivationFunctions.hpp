@@ -51,21 +51,32 @@ public:
     // Softmax activation
     static void softmax(Tensor& location, const Tensor& a) {
         std::vector<size_t> shape = a.getShape();
+        size_t batch_size = shape[0];
+        size_t num_logits = shape[1];
 
-        float max_value = *std::max_element(a.data.begin(), a.data.end());
-        max_value = std::max(max_value, -20.0f);  // Prevent underflow
-        max_value = std::min(max_value, 20.0f);   // Prevent overflow
+        for (size_t batch_idx = 0; batch_idx < batch_size; ++batch_idx) {
+            float max_val = *std::max_element(a.data.begin() + batch_idx * num_logits,
+                a.data.begin() + (batch_idx + 1) * num_logits);
+            max_val = std::min(std::max(max_val, -50.0f), 50.0f); 
 
-        float summation = 0.0f;
-        for (size_t i = 0; i < a.data.size(); i++) {
-            location.data[i] = std::exp(a.data[i] - max_value);
-            summation += location.data[i];
-        }
+            float sum = 0.0f;
 
-        for (size_t i = 0; i < a.data.size(); i++) {
-            location.data[i] /= summation;
+            for (size_t i = 0; i < num_logits; i++) {
+                size_t idx = batch_idx * num_logits + i;
+                float val = std::exp(a.data[idx] - max_val);
+                val = std::min(std::max(val, 1e-20f), 1e20f); 
+                location.data[idx] = val;
+                sum += val;
+            }
+
+            sum = std::max(sum, 1e-20f);
+            for (size_t i = 0; i < num_logits; i++) {
+                size_t idx = batch_idx * num_logits + i;
+                location.data[idx] /= sum;
+            }
         }
     }
+
     
     // Derivative of softmax (diagonals of jacobian): 
     static void softmax_derivative(Tensor& location, const Tensor& a) {

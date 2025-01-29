@@ -30,7 +30,9 @@ public:
 		case(ActivationFunctions::TYPES::SOFTMAX):
 			Initializer::xavier_init(weights, _is, _os);
 			break;
-
+		case (ActivationFunctions::TYPES::SOFTMAX_CEL):
+			Initializer::final_layer_init(weights, _is);
+			break;
 		default:
 			Initializer::uniform(weights, _is);
 			break;
@@ -68,9 +70,5 @@ public:
 				}
 			}
 		}
-
-		*input_gradient /= num_batches;
-		*weight_gradient /= num_batches;
-		*bias_gradient /= num_batches;
 	}
 };

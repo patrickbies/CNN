@@ -11,8 +11,8 @@
 
 const char* input_file = "mnist_train.csv";
 const char* test_file = "mnist_test.csv";
-const size_t BATCH_SIZE = 16;
-const size_t NUM_BATCHES = 30;
+const size_t BATCH_SIZE = 32;
+const size_t NUM_BATCHES = 100;
 const size_t EPOCHS = 100;
 
 // DELETE LATER : Stole from Network class
@@ -52,14 +52,15 @@ int main() {
 	network.add(new DenseLayer(128, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
 	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
-	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));*/
+	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
+	*/
 
 	network.add(new FlattenLayer());
 	network.add(new DenseLayer(128, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
 	network.add(new DenseLayer(64, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
+	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX_CEL));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
 
 	//network.setInputShape({ 1, 1, 28, 28 });
@@ -67,7 +68,7 @@ int main() {
 	//std::cout << "test before training: " << network.test(test_data.first, test_data.second) << std::endl;
 
 	network.setInputShape({ BATCH_SIZE, 1, 28, 28 });
-	network.compile(new CrossEntropyLoss(), new SGD(0.1));
+	network.compile(new CrossEntropyLoss(), new SGD(0.001));
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
 	//network.setInputShape({ 1, 1, 28, 28 });
