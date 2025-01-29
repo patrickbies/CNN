@@ -52,6 +52,7 @@ public:
 		return bias_gradient;
 	}
 
+	virtual void setNumBatches(size_t batches) = 0;
 	virtual void initialize(std::vector<size_t> input_shape) = 0;
 	virtual void forward() = 0;
 

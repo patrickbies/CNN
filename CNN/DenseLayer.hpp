@@ -44,6 +44,8 @@ public:
 		output = new Tensor({ num_batches, output_size });
 	}
 
+	void setNumBatches(size_t batches) override {}
+
 	void forward() override {
 		for (size_t b = 0; b < num_batches; b++) {
 			for (size_t i = 0; i < output_size; i++) {

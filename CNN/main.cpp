@@ -11,9 +11,8 @@
 
 const char* input_file = "mnist_train.csv";
 const char* test_file = "mnist_test.csv";
-const size_t BATCH_SIZE = 32;
-const size_t NUM_BATCHES = 100;
-const size_t EPOCHS = 100;
+const size_t BATCH_SIZE = 30;
+const size_t EPOCHS = 10;
 
 // DELETE LATER : Stole from Network class
 void setBatch(Tensor& batch_tensor, const Tensor& data, size_t batch, size_t batch_size) {
@@ -33,6 +32,8 @@ int main() {
 	// data pair contains: { data, labels }
 	std::pair<Tensor, Tensor> data = MNISTToTensor::parseCSV(input_file);
 	// std::pair<Tensor, Tensor> test_data = MNISTToTensor::parseCSV(test_file);
+
+	size_t NUM_BATCHES = data.first.getShape()[0] / BATCH_SIZE;
 
 	Tensor test_data = Tensor({ BATCH_SIZE * NUM_BATCHES, 1, 28, 28 });
 	Tensor test_labels = Tensor({ BATCH_SIZE * NUM_BATCHES, 10 });

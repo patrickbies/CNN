@@ -22,6 +22,9 @@ public:
         max_indices = Tensor(output->getShape(), -1);
     }
 
+    void setNumBatches(size_t batches) override {
+    }
+
     void forward() override {
         const std::vector<size_t> input_shape = input->getShape();
         const std::vector<size_t> output_shape = output->getShape();

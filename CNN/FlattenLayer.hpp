@@ -23,6 +23,8 @@ public:
         output = new Tensor({ input_shape[0], flattened_size });
     }
 
+    void setNumBatches(size_t batches) override {}
+
     void forward() override {
         if (!input) {
             throw std::runtime_error("Input tensor is not set for FlattenLayer.");

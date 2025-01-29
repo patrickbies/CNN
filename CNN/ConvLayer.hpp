@@ -73,6 +73,8 @@ public:
 		input_gradient = new Tensor(input_shape);
 	}
 
+	void setNumBatches(size_t batches) override {}
+
 	void forward() override {
 		const std::vector<size_t>& input_shape = input->getShape();
 

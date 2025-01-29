@@ -28,6 +28,8 @@ public:
 		}
 	}
 
+	void setNumBatches(size_t batches) override {}
+
 	void backward(const Tensor& gradOutput) override {
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
