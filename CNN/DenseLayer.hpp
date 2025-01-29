@@ -45,11 +45,11 @@ public:
 	void forward() override {
 		for (size_t b = 0; b < num_batches; b++) {
 			for (size_t i = 0; i < output_size; i++) {
-				float sum = biases({ i });
+				float sum = biases.data[i];
 				for (size_t j = 0; j < input_size; j++) {
-					sum += (*input)({ b, j }) * weights({ j, i });
+					sum += input->data[b * input_size + j] * weights.data[j * output_size + i];
 				}
-				(*output)({ b, i }) = sum;
+				output->data[b * output_size + i] = sum;
 			}
 		}
 	}
@@ -58,13 +58,13 @@ public:
 		input_gradient->zero();
 		weight_gradient->zero();
 		bias_gradient->zero();
-
+		
 		for (size_t b = 0; b < num_batches; b++) {
 			for (size_t i = 0; i < output_size; i++) {
-				(*bias_gradient)({ i }) += gradOutput({ b, i });
+				bias_gradient->data[i] += gradOutput.data[b * output_size + i];
 				for (size_t j = 0; j < input_size; j++) {
-					(*weight_gradient)({ j, i }) += (*input)({ b, j }) * gradOutput({ b, i });
-					(*input_gradient)({ b, j }) += weights({ j, i }) * gradOutput({ b, i });
+					weight_gradient->data[j * output_size + i] += input->data[b * input_size + j] * gradOutput.data[b * output_size + i];
+					input_gradient->data[b * input_size + j] += weights.data[j * output_size + i] * gradOutput.data[b * output_size + i];
 				}
 			}
 		}

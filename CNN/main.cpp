@@ -11,9 +11,9 @@
 
 const char* input_file = "mnist_train.csv";
 const char* test_file = "mnist_test.csv";
-const size_t BATCH_SIZE = 32;
-const size_t NUM_BATCHES = 10;
-const size_t EPOCHS = 10;
+const size_t BATCH_SIZE = 16;
+const size_t NUM_BATCHES = 30;
+const size_t EPOCHS = 100;
 
 // DELETE LATER : Stole from Network class
 void setBatch(Tensor& batch_tensor, const Tensor& data, size_t batch, size_t batch_size) {
@@ -67,7 +67,7 @@ int main() {
 	//std::cout << "test before training: " << network.test(test_data.first, test_data.second) << std::endl;
 
 	network.setInputShape({ BATCH_SIZE, 1, 28, 28 });
-	network.compile(new CrossEntropyLoss(), new Adam(0.001));
+	network.compile(new CrossEntropyLoss(), new SGD(0.1));
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
 	//network.setInputShape({ 1, 1, 28, 28 });

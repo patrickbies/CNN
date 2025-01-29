@@ -14,7 +14,7 @@ public:
 		
 		for (size_t i = 0; i < labels.getShape()[0]; i++) {
 			for (size_t j = 0; j < labels.getShape()[1]; j++) {
-				loss += labels({ i, j }) * std::log(std::max(1e-7f, predictions({ i, j })));
+				loss += labels.data[i * labels.getShape()[1] + j] * std::log(std::max(1e-7f, predictions.data[i * labels.getShape()[1] + j]));
 			}
 		}
 
