@@ -6,13 +6,13 @@ class DenseLayer : public Layer {
 private: 
 	size_t output_size;
 	size_t input_size = 0;
-	size_t num_batches = 0;
 
 public: 
 	DenseLayer(size_t output_size, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE) : Layer(_ac), output_size(output_size) {}
 
-	void initialize(std::vector<size_t> input_shape) override {
-		num_batches = input_shape[0];
+	void initialize(std::vector<size_t> is) override {
+		input_shape = is;
+		output_shape = { input_shape[0], output_size};
 		input_size = std::accumulate(input_shape.begin() + 1, input_shape.end(), 1, std::multiplies<>());
 
 		size_t _is = input_size;
@@ -40,14 +40,10 @@ public:
 
 		weight_gradient = new Tensor({ input_size, output_size });
 		bias_gradient = new Tensor({ output_size });
-		input_gradient = new Tensor(input_shape);
-		output = new Tensor({ num_batches, output_size });
 	}
 
-	void setNumBatches(size_t batches) override {}
-
 	void forward() override {
-		for (size_t b = 0; b < num_batches; b++) {
+		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t i = 0; i < output_size; i++) {
 				float sum = biases.data[i];
 				for (size_t j = 0; j < input_size; j++) {
@@ -63,7 +59,7 @@ public:
 		weight_gradient->zero();
 		bias_gradient->zero();
 		
-		for (size_t b = 0; b < num_batches; b++) {
+		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t i = 0; i < output_size; i++) {
 				bias_gradient->data[i] += gradOutput.data[b * output_size + i];
 				for (size_t j = 0; j < input_size; j++) {

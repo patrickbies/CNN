@@ -6,9 +6,9 @@ class ActivationLayer : public Layer {
 public:
 	ActivationLayer(ActivationFunctions::TYPES _activation_function) : Layer(_activation_function) {}
 
-	void initialize(std::vector<size_t> input_shape) override {
-		output = new Tensor(input_shape);
-		input_gradient = new Tensor(input_shape);
+	void initialize(std::vector<size_t> is) override {
+		input_shape = is;
+		output_shape = is;
 	}
 
 	void forward() override {
@@ -27,8 +27,6 @@ public:
 			throw std::invalid_argument("Unsupported activation function.");
 		}
 	}
-
-	void setNumBatches(size_t batches) override {}
 
 	void backward(const Tensor& gradOutput) override {
 		switch (activation_function) {

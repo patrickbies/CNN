@@ -4,26 +4,19 @@
 #include <stdexcept>
 
 class FlattenLayer : public Layer {
-private:
-    std::vector<size_t> input_shape; 
-
 public:
     FlattenLayer() : Layer(ActivationFunctions::TYPES::NONE) {}
 
-    void initialize(std::vector<size_t> input_shape) override {
-        if (input_shape.size() < 2) {
+    void initialize(std::vector<size_t> is) override {
+        if (is.size() < 2) {
             throw std::invalid_argument("Input shape must have at least two dimensions.");
         }
 
-        this->input_shape = input_shape;
+        input_shape = is;
 
-        size_t flattened_size = std::accumulate(input_shape.begin(), input_shape.end(), 1, std::multiplies<>()) / input_shape[0];
-
-        input_gradient = new Tensor(input_shape);
-        output = new Tensor({ input_shape[0], flattened_size });
+        size_t flattened_size = std::accumulate(input_shape.begin() + 1, input_shape.end(), 1, std::multiplies<>());
+        output_shape = { input_shape[0], flattened_size};
     }
-
-    void setNumBatches(size_t batches) override {}
 
     void forward() override {
         if (!input) {

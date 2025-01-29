@@ -13,22 +13,29 @@ public:
     PoolLayer(size_t window_size, size_t stride = 1, ActivationFunctions::TYPES _ac = ActivationFunctions::TYPES::NONE)
         : Layer(_ac), window_size(window_size), stride(stride) {}
 
-    void initialize(std::vector<size_t> input_shape) override {
+    void initialize(std::vector<size_t> is) override {
+        input_shape = is;
+
         size_t output_height = (input_shape[2] - window_size) / stride + 1;
         size_t output_width = (input_shape[3] - window_size) / stride + 1;
 
-        output = new Tensor({ input_shape[0], input_shape[1], output_height, output_width });
-        input_gradient = new Tensor(input_shape);
-        max_indices = Tensor(output->getShape(), -1);
+        output_shape = { input_shape[0], input_shape[1], output_height, output_width };
     }
 
-    void setNumBatches(size_t batches) override {
+    void initOutput(size_t batches) override {
+        if (!output_shape.size()) {
+            throw std::exception("Layer must be intialized prior to setting the number of batches");
+        }
+
+        input_shape[0] = batches;
+        output_shape[0] = batches;
+        output = new Tensor(output_shape);
+
+        input_gradient = new Tensor(input_shape);
+        max_indices = Tensor(output_shape, -1);
     }
 
     void forward() override {
-        const std::vector<size_t> input_shape = input->getShape();
-        const std::vector<size_t> output_shape = output->getShape();
-
         for (size_t b = 0; b < input_shape[0]; b++) {
             for (size_t c = 0; c < input_shape[1]; c++) {
                 for (size_t h = 0; h < output_shape[2]; h++) {
@@ -63,9 +70,6 @@ public:
     }
 
     void backward(const Tensor& gradOutput) override {
-        const std::vector<size_t> input_shape = input->getShape();
-        const std::vector<size_t> output_shape = output->getShape();
-
         for (size_t b = 0; b < output_shape[0]; b++) {
             for (size_t c = 0; c < output_shape[1]; c++) {
                 for (size_t h = 0; h < output_shape[2]; h++) {

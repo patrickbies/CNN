@@ -33,8 +33,26 @@ public:
 		std::vector<size_t> next_shape = input_shape;
 		Tensor* next_input = nullptr;
 
+		// default # of batches to 1
+		next_shape.insert(next_shape.begin(), 1);
+
 		for (size_t i = 0; i < layers.size(); i++) {
 			layers[i]->initialize(next_shape);
+			next_shape = layers[i]->getOutputShape();
+		}
+	}
+
+	void linkLayers(size_t batches) {
+		if (!input_shape.size())
+			throw std::exception("input shape must be set.");
+
+		std::vector<size_t> next_shape = input_shape;
+
+		next_shape.insert(next_shape.begin(), batches);
+		Tensor* next_input = nullptr;
+
+		for (size_t i = 0; i < layers.size(); i++) {
+			layers[i]->initOutput(batches);
 			layers[i]->setInput(next_input);
 
 			next_input = layers[i]->getOutput();
@@ -42,7 +60,6 @@ public:
 		}
 	}
 
-	// Returns a pointer tensor incase debugging is needed; 
 	Tensor* step(size_t ind) {
 		if (ind >= layers.size() || !layers[ind]->getInput())
 			throw std::exception("Must add layers, or must set input, or must compile network.");
@@ -58,10 +75,49 @@ public:
 		batch_input = Tensor(bi_shape);
 		batch_labels = Tensor(bl_shape);
 
+		linkLayers(batch_size);
+
 		for (size_t i = 0; i < epochs; i++) {
 			train_epoch(training_data, labels, batch_size);
 			std::cout << "Epoch " << i + 1 << " completed." << std::endl;
 		}
+	}
+
+	float one_hot_accuracy(const Tensor& training_data, const Tensor& labels) {
+		std::vector<size_t> bi_shape = training_data.getShape(), bl_shape = labels.getShape();
+		bi_shape[0] = bl_shape[0] = 1;
+
+		batch_input = Tensor(bi_shape);
+		batch_labels = Tensor(bl_shape);
+
+		linkLayers(1);
+
+		float res = 0.0f;
+
+		for (int i = 0; i < training_data.getShape()[0]; i++) {
+			setBatch(batch_input, training_data, i, 1);
+			setBatch(batch_labels, labels, i, 1);
+
+			Tensor* predictions = predict(&batch_input);
+
+			float mx = -1e9;
+			size_t m = 0;
+			for (int j = 0; j < predictions->data.size(); j++) {
+				if (predictions->data[j] < mx) {
+					m = j;
+					mx = predictions->data[j];
+				}
+			}
+
+			for (int j = 0; j < labels.data.size(); j++) {
+				if (labels.data[j] > 0) {
+					res += j == m;
+					break;
+				}
+			}
+		}
+
+		return res / training_data.getShape()[0];
 	}
 	
 	Tensor* predict(Tensor* input) {

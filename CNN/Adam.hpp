@@ -16,15 +16,10 @@ public:
 		: Optimizer(lr), beta1(beta1), beta2(beta2),
 		  epsilon(epsilon), t(0) {};
 
-	//void step(Tensor& weights, Tensor& biases, const Tensor& weight_grad, Tensor& bias_grad) override {
-	//	t++;
-	//	
-	//}
-
 	void updateWeights(Tensor& weights, const Tensor& gradients) override {		
 		if (!moments.count(&weights)) {
 			initialize_moments(weights);
-			std::cout << "initialized weights" << std::endl;
+			std::cout << "initialized moments" << std::endl;
 		}
 
 		auto& a = moments[&weights];

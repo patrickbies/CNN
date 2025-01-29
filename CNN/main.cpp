@@ -11,7 +11,7 @@
 
 const char* input_file = "mnist_train.csv";
 const char* test_file = "mnist_test.csv";
-const size_t BATCH_SIZE = 30;
+const size_t BATCH_SIZE = 60;
 const size_t EPOCHS = 10;
 
 // DELETE LATER : Stole from Network class
@@ -31,7 +31,7 @@ void setBatch(Tensor& batch_tensor, const Tensor& data, size_t batch, size_t bat
 int main() {
 	// data pair contains: { data, labels }
 	std::pair<Tensor, Tensor> data = MNISTToTensor::parseCSV(input_file);
-	// std::pair<Tensor, Tensor> test_data = MNISTToTensor::parseCSV(test_file);
+	std::pair<Tensor, Tensor> test = MNISTToTensor::parseCSV(test_file);
 
 	size_t NUM_BATCHES = data.first.getShape()[0] / BATCH_SIZE;
 
@@ -55,17 +55,14 @@ int main() {
 	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
 
-	//network.setInputShape({ 1, 1, 28, 28 });
-	//network.compile(new CrossEntropyLoss(), new SGD());
-	//std::cout << "test before training: " << network.test(test_data.first, test_data.second) << std::endl;
-
-	network.setInputShape({ BATCH_SIZE, 1, 28, 28 });
+	network.setInputShape({ 1, 28, 28 }); // CWH no batch size included
 	network.compile(new CrossEntropyLoss(), new Adam(0.001));
+
+	std::cout << "test before training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
+
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
-	//network.setInputShape({ 1, 1, 28, 28 });
-	//network.compile(new CrossEntropyLoss(), new SGD());
-	//std::cout << "test after training: " << network.test(test_data.first, test_data.second) << std::endl;
+	std::cout << "test after training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
 
 	return 0;
 }

@@ -41,17 +41,18 @@ public:
 	{
 	}
 	
-	void initialize(std::vector<size_t> input_shape) override {
+	void initialize(std::vector<size_t> is) override {
+		input_shape = is;
 		weights = Tensor({ num_filters, input_shape[1], filter_width, filter_height});
 		biases = Tensor({ num_filters });
 
 		size_t outh = (input_shape[2] + 2 * padding - filter_height) / stride + 1;
 		size_t outw = (input_shape[3] + 2 * padding - filter_width) / stride + 1;
 
-		output = new Tensor({ input_shape[0], num_filters, outh, outw });
-
 		size_t filter_size = weights.data.size();
-		size_t output_size = input_shape[0] * num_filters * outh * outw;
+		size_t output_size = num_filters * outh * outw;
+
+		output_shape = { input_shape[0], num_filters, outh, outw };
 
 		switch (activation_function) {
 		case (ActivationFunctions::TYPES::RELU):
@@ -70,14 +71,9 @@ public:
 
 		weight_gradient = new Tensor(weights.getShape());
 		bias_gradient = new Tensor({ num_filters });
-		input_gradient = new Tensor(input_shape);
 	}
 
-	void setNumBatches(size_t batches) override {}
-
 	void forward() override {
-		const std::vector<size_t>& input_shape = input->getShape();
-
 		size_t output_height = output->getShape()[2];
 		size_t output_width = output->getShape()[3];
 
@@ -113,9 +109,6 @@ public:
 	}
 
 	void backward(const Tensor& gradOutput) override {
-		std::vector<size_t> input_shape = input->getShape();
-		std::vector<size_t> output_shape = output->getShape();
-
 		input_gradient->zero();
 		weight_gradient->zero();
 		bias_gradient->zero();
