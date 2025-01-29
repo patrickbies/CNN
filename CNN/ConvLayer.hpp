@@ -19,7 +19,7 @@ private:
 			for (size_t c = 0; c < input_shape[1]; c++) {
 				for (size_t h = 0; h < input_shape[2]; h++) {
 					for (size_t w = 0; w < input_shape[3]; w++) {
-						padded_input({ b, c, h + padding, w + padding }) = (*input)({b, c, h, w});
+						padded_input(b, c, h + padding, w + padding) = (*input)(b, c, h, w);
 					}
 				}
 			}
@@ -74,12 +74,12 @@ public:
 	}
 
 	void forward() override {
-		Tensor inp = applyPadding();
-		const std::vector<size_t>& input_shape = inp.getShape();
+		const std::vector<size_t>& input_shape = input->getShape();
 
 		size_t output_height = output->getShape()[2];
 		size_t output_width = output->getShape()[3];
 
+#pragma omp parallel for collapse(4)
 		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t f = 0; f < num_filters; f++) {
 				for (size_t h = 0; h < output_height; h++) {
@@ -98,12 +98,12 @@ public:
 									size_t w_index = w_start + fw;
 									if (w_index >= input_shape[3]) continue;
 
-									sum += weights({ f, c, fh, fw }) * inp({ b, c, h_index, w_index });
+									sum += weights(f, c, fh, fw) * (*input)(b, c, h_index, w_index);
 								}
 							}
 						}
 
-						(*output)({ b, f, h, w }) = sum + biases({ f });
+						(*output)(b, f, h, w) = sum + biases.data[f];
 					}
 				}
 			}
@@ -118,6 +118,7 @@ public:
 		weight_gradient->zero();
 		bias_gradient->zero();
 
+#pragma omp parallel for collapse(6);
 		for (size_t b = 0; b < input_shape[0]; b++) {
 			for (size_t c = 0; c < input_shape[1]; c++) {
 				for (size_t i = 0; i < input_shape[2]; i++) {
@@ -132,8 +133,8 @@ public:
 										size_t fh = i - h_start;
 										size_t fw = j - w_start;
 										
-										(*input_gradient)({ b, c, i, j }) +=
-											gradOutput({ b, o, p, q }) * weights({ o, c, fh, fw });
+										(*input_gradient)(b, c, i, j) +=
+											gradOutput(b, o, p, q) * weights(o, c, fh, fw);
 									}
 								}
 							}
@@ -150,8 +151,8 @@ public:
 						for (size_t b = 0; b < input_shape[0]; b++) {
 							for (size_t p = 0; p < output_shape[2]; p++) {
 								for (size_t q = 0; q < output_shape[3]; q++) {
-									(*weight_gradient)({ o, c, fh, fw }) +=
-										gradOutput({ b, o, p, q }) * (*input)({ b, c, p * stride + fh, q * stride + fw });
+									(*weight_gradient)(o, c, fh, fw) +=
+										gradOutput(b, o, p, q) * (*input)(b, c, p * stride + fh, q * stride + fw);
 								}
 							}
 						}
@@ -164,7 +165,7 @@ public:
 			for (size_t b = 0; b < input_shape[0]; b++) {
 				for (size_t p = 0; p < output_shape[2]; p++) {
 					for (size_t q = 0; q < output_shape[3]; q++) {
-						(*bias_gradient)({ o }) += gradOutput({ b, o, p, q });
+						bias_gradient->data[o] += gradOutput(b, o, p, q);
 					}
 				}
 			}

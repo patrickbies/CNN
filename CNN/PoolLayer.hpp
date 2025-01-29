@@ -42,7 +42,7 @@ public:
                                 size_t input_w = w_start + x;
 
                                 if (input_h < input_shape[2] && input_w < input_shape[3]) {
-                                    float cur = (*input)({ b, c, input_h, input_w });
+                                    float cur = (*input)(b, c, input_h, input_w);
                                     if (cur > mx) {
                                         mx = cur;
                                         max_index = input_h * input_shape[3] + input_w;
@@ -51,8 +51,8 @@ public:
                             }
                         }
 
-                        max_indices({ b, c, h, w }) = max_index;
-                        (*output)({ b, c, h, w }) = mx;
+                        max_indices(b, c, h, w) = max_index;
+                        (*output)(b, c, h, w) = mx;
                     }
                 }
             }
@@ -70,7 +70,7 @@ public:
                         size_t flat_index = max_indices({ b, c, h, w });
                         size_t input_h = flat_index / input_shape[3];
                         size_t input_w = flat_index % input_shape[3];
-                        (*input_gradient)({ b, c, input_h, input_w }) += gradOutput({ b, c, h, w });
+                        (*input_gradient)(b, c, input_h, input_w) += gradOutput(b, c, h, w);
                     }
                 }
             }

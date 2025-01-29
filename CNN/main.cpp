@@ -42,7 +42,7 @@ int main() {
 
 	Network network;
 
-	/*network.add(new ConvLayer(16, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
+	network.add(new ConvLayer(16, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
 	network.add(new PoolLayer(2, 2));
 	network.add(new ConvLayer(32, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
@@ -53,22 +53,13 @@ int main() {
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
 	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
-	*/
-
-	network.add(new FlattenLayer());
-	network.add(new DenseLayer(128, ActivationFunctions::TYPES::RELU));
-	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new DenseLayer(64, ActivationFunctions::TYPES::RELU));
-	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX_CEL));
-	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
 
 	//network.setInputShape({ 1, 1, 28, 28 });
 	//network.compile(new CrossEntropyLoss(), new SGD());
 	//std::cout << "test before training: " << network.test(test_data.first, test_data.second) << std::endl;
 
 	network.setInputShape({ BATCH_SIZE, 1, 28, 28 });
-	network.compile(new CrossEntropyLoss(), new SGD(0.001));
+	network.compile(new CrossEntropyLoss(), new Adam(0.001));
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
 	//network.setInputShape({ 1, 1, 28, 28 });

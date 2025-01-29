@@ -5,6 +5,7 @@
 #include <numeric>
 #include <functional>
 #include <cmath>
+#include <omp.h>
 
 class Tensor {
 private: 
@@ -46,6 +47,14 @@ public:
 		data.resize(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>()), initial);
 	}
 
+	inline float& operator()(size_t b, size_t c, size_t h, size_t w) {
+		return data[b * strides[0] + c * strides[1] + h * strides[2] + w * strides[3]];
+	}
+
+	inline const float& operator()(size_t b, size_t c, size_t h, size_t w) const {
+		return data[b * strides[0] + c * strides[1] + h * strides[2] + w * strides[3]];
+	}
+
 	float& operator()(const std::vector<size_t>& indices) {
 		return data[flatten(indices)];
 	}
@@ -61,6 +70,7 @@ public:
 
 		Tensor result(shape);
 
+#pragma omp parallel for
 		for (size_t i = 0; i < data.size(); i++) {
 			result.data[i] = data[i] * other.data[i];
 		}
