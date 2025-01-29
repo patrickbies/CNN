@@ -14,7 +14,7 @@ public:
 		
 		for (size_t i = 0; i < labels.getShape()[0]; i++) {
 			for (size_t j = 0; j < labels.getShape()[1]; j++) {
-				loss += labels({ i, j }) * std::log(std::max(1e-8f, predictions({ i, j })));
+				loss += labels({ i, j }) * std::log(std::max(1e-7f, predictions({ i, j })));
 			}
 		}
 
@@ -26,6 +26,6 @@ public:
 			throw std::out_of_range("Labels and Predictions size do not match.");
 		}
 
-		return predictions - labels;
+		return (predictions - labels) / labels.getShape()[0];
 	};
 };

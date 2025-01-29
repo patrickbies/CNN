@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.hpp" />
     <ClInclude Include="ActivationLayer.hpp" />
+    <ClInclude Include="Adam.hpp" />
     <ClInclude Include="CrossEntropyLoss.hpp" />
     <ClInclude Include="Initializer.hpp" />
     <ClInclude Include="Layer.hpp" />

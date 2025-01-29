@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <functional>
+#include <cmath>
 
 class Tensor {
 private: 
@@ -67,11 +68,55 @@ public:
 		return result;
 	}
 
+	Tensor operator/(const Tensor& other) const {
+		if (shape != other.getShape()) {
+			throw std::invalid_argument("Shape mismatch: Tensors must have the same shape for element-wise multiplication");
+		}
+
+		Tensor result(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] / other.data[i];
+		}
+
+		return result;
+	}
+
 	Tensor operator*(float other) const {
 		Tensor result(shape);
 
 		for (size_t i = 0; i < data.size(); i++) {
 			result.data[i] = data[i] * other;
+		}
+
+		return result;
+	}
+
+	Tensor operator/(float other) const {
+		Tensor result(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] / other;
+		}
+
+		return result;
+	}
+
+	Tensor operator+(float other) const {
+		Tensor result(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] + other;
+		}
+
+		return result;
+	}
+
+	Tensor operator+(const Tensor& other) const {
+		Tensor result(shape);
+
+		for (size_t i = 0; i < data.size(); i++) {
+			result.data[i] = data[i] + other.data[i];
 		}
 
 		return result;
@@ -84,6 +129,12 @@ public:
 
 		for (size_t i = 0; i < data.size(); i++) {
 			data[i] -= other.data[i];
+		}
+	}
+
+	void operator/=(float other) {
+		for (size_t i = 0; i < data.size(); i++) {
+			data[i] /= other;
 		}
 	}
 
@@ -126,5 +177,21 @@ public:
 
 	void zero() {
 		for (size_t i = 0; i < data.size(); i++) data[i] = 0;
+	}
+
+	Tensor square() const {
+		Tensor result(shape);
+		for (size_t i = 0; i < data.size(); ++i) {
+			result.data[i] = data[i] * data[i];
+		}
+		return result;
+	}
+
+	Tensor sqrt() const {
+		Tensor result(shape);
+		for (size_t i = 0; i < data.size(); ++i) {
+			result.data[i] = std::sqrt(data[i]);
+		}
+		return result;
 	}
 };

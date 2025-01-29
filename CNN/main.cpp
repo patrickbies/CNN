@@ -7,6 +7,7 @@
 #include "FlattenLayer.hpp"
 #include "CrossEntropyLoss.hpp"
 #include "SGD.hpp"
+#include "Adam.hpp"
 
 const char* input_file = "mnist_train.csv";
 const char* test_file = "mnist_test.csv";
@@ -66,7 +67,7 @@ int main() {
 	//std::cout << "test before training: " << network.test(test_data.first, test_data.second) << std::endl;
 
 	network.setInputShape({ BATCH_SIZE, 1, 28, 28 });
-	network.compile(new CrossEntropyLoss(), new SGD(0.001));
+	network.compile(new CrossEntropyLoss(), new Adam(0.001));
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
 	//network.setInputShape({ 1, 1, 28, 28 });

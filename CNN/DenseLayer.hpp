@@ -68,5 +68,9 @@ public:
 				}
 			}
 		}
+
+		*input_gradient /= num_batches;
+		*weight_gradient /= num_batches;
+		*bias_gradient /= num_batches;
 	}
 };

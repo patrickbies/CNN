@@ -71,5 +71,8 @@
     <ClInclude Include="MNISTToTensor.hpp">
       <Filter>Header Files\MNIST Parser</Filter>
     </ClInclude>
+    <ClInclude Include="Adam.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

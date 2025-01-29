@@ -53,6 +53,8 @@ public:
         std::vector<size_t> shape = a.getShape();
 
         float max_value = *std::max_element(a.data.begin(), a.data.end());
+        max_value = std::max(max_value, -20.0f);  // Prevent underflow
+        max_value = std::min(max_value, 20.0f);   // Prevent overflow
 
         float summation = 0.0f;
         for (size_t i = 0; i < a.data.size(); i++) {
