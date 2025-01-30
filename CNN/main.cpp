@@ -58,11 +58,11 @@ int main() {
 	network.setInputShape({ 1, 28, 28 }); // CWH no batch size included
 	network.compile(new CrossEntropyLoss(), new Adam(0.001));
 
-	std::cout << "test before training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
+	//std::cout << "test before training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
 
 	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
 
-	std::cout << "test after training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
+	//std::cout << "test after training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
 
 	return 0;
 }
