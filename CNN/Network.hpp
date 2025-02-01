@@ -68,18 +68,16 @@ public:
 		return layers[ind]->getOutput();
 	}
 
-	void fit(const Tensor& training_data, const Tensor& labels, size_t epochs, size_t batch_size) {
-		std::vector<size_t> bi_shape = training_data.getShape(), bl_shape = labels.getShape();
-		bi_shape[0] = bl_shape[0] = batch_size;
-
-		batch_input = Tensor(bi_shape);
-		batch_labels = Tensor(bl_shape);
-
-		linkLayers(batch_size);
-
+	void fit(const Tensor& training_data, 
+			const Tensor& labels, 
+			size_t epochs, 
+			size_t batch_size, 
+			std::function<void()> pre_epoch = 0)
+	{
 		for (size_t i = 0; i < epochs; i++) {
 			train_epoch(training_data, labels, batch_size);
 			std::cout << "Epoch " << i + 1 << " completed." << std::endl;
+			pre_epoch();
 		}
 	}
 
@@ -103,7 +101,7 @@ public:
 			float mx = -1e9;
 			size_t m = 0;
 			for (int j = 0; j < predictions->data.size(); j++) {
-				if (predictions->data[j] < mx) {
+				if (predictions->data[j] > mx) {
 					m = j;
 					mx = predictions->data[j];
 				}
@@ -117,7 +115,7 @@ public:
 			}
 		}
 
-		return res / training_data.getShape()[0];
+		return res / static_cast<float>(training_data.getShape()[0]);
 	}
 	
 	Tensor* predict(Tensor* input) {
@@ -158,6 +156,13 @@ private:
 	
 	void train_epoch(const Tensor& data, const Tensor& labels, size_t batch_size) {
 		size_t num_batches = data.getShape()[0] / batch_size;
+		linkLayers(batch_size);
+
+		std::vector<size_t> bi_shape = data.getShape(), bl_shape = labels.getShape();
+		bi_shape[0] = bl_shape[0] = batch_size;
+
+		batch_input = Tensor(bi_shape);
+		batch_labels = Tensor(bl_shape);
 
 		for (size_t i = 0; i < num_batches; i++) {
 			setBatch(batch_input, data, i, batch_size);
