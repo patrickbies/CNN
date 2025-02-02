@@ -54,6 +54,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.8.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -131,6 +132,7 @@
     <ClInclude Include="ActivationLayer.hpp" />
     <ClInclude Include="Adam.hpp" />
     <ClInclude Include="CrossEntropyLoss.hpp" />
+    <ClInclude Include="DropoutLayer.hpp" />
     <ClInclude Include="Initializer.hpp" />
     <ClInclude Include="Layer.hpp" />
     <ClInclude Include="Loss.hpp" />
@@ -141,6 +143,7 @@
     <ClInclude Include="Tensor.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BatchNormLayer.hpp" />
     <ClCompile Include="ConvLayer.hpp" />
     <ClCompile Include="DenseLayer.hpp" />
     <ClCompile Include="FlattenLayer.hpp" />
@@ -149,5 +152,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.8.targets" />
   </ImportGroup>
 </Project>

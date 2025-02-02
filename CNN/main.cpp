@@ -5,6 +5,8 @@
 #include "ActivationLayer.hpp"
 #include "PoolLayer.hpp"
 #include "FlattenLayer.hpp"
+#include "BatchNormLayer.hpp"
+#include "DropoutLayer.hpp"
 #include "CrossEntropyLoss.hpp"
 #include "SGD.hpp"
 #include "Adam.hpp"
@@ -43,26 +45,44 @@ int main() {
 
 	Network network;
 
-	network.add(new ConvLayer(16, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
-	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new PoolLayer(2, 2));
 	network.add(new ConvLayer(32, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new PoolLayer(2, 2));
-	network.add(new FlattenLayer());
-	network.add(new DenseLayer(128, ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new ConvLayer(32, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new PoolLayer(2, 2));
+	network.add(new DropoutLayer(0.25));
+
+	network.add(new ConvLayer(64, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
+	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new ConvLayer(64, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
+	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new PoolLayer(2, 2));
+	network.add(new DropoutLayer(0.25));
+
+	network.add(new FlattenLayer());
+	network.add(new DenseLayer(512, ActivationFunctions::TYPES::RELU));
+	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new DropoutLayer(0.25));
+
+	network.add(new DenseLayer(1024, ActivationFunctions::TYPES::RELU));
+	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
+	network.add(new BatchNormLayer());
+	network.add(new DropoutLayer(0.5));
+
 	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));
 
 	network.setInputShape({ 1, 28, 28 }); // CWH no batch size included
-	network.compile(new CrossEntropyLoss(), new Adam(0.001));
+	network.compile(new CrossEntropyLoss(), new Adam());
 
-	//std::cout << "test before training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
-
-	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE);
-
-	//std::cout << "test after training: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
+	network.fit(test_data, test_labels, EPOCHS, BATCH_SIZE, [&network, &test]() {
+		std::cout << "current validation: " << network.one_hot_accuracy(test.first, test.second) << std::endl;
+	});
 
 	return 0;
 }

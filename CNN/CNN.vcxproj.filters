@@ -36,6 +36,9 @@
     <ClCompile Include="FlattenLayer.hpp">
       <Filter>Header Files\CNN Headers</Filter>
     </ClCompile>
+    <ClCompile Include="BatchNormLayer.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivationFunctions.hpp">
@@ -72,6 +75,9 @@
       <Filter>Header Files\MNIST Parser</Filter>
     </ClInclude>
     <ClInclude Include="Adam.hpp">
+      <Filter>Header Files\CNN Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DropoutLayer.hpp">
       <Filter>Header Files\CNN Headers</Filter>
     </ClInclude>
   </ItemGroup>

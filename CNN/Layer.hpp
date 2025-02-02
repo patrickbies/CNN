@@ -71,7 +71,5 @@ public:
 	};
 	virtual void initialize(std::vector<size_t> input_shape) = 0;
 	virtual void forward() = 0;
-
-	// returns tuple of <input gradient, weight gradient, bias gradient> wrt loss:
-	virtual void backward(const Tensor& gradOutput) = 0; // gradoutput should be size of output
+	virtual void backward(const Tensor& gradOutput) = 0;
 };
