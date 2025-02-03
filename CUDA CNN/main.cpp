@@ -47,32 +47,32 @@ int main() {
 
 	network.add(new ConvLayer(32, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
+	//network.add(new BatchNormLayer());
 	network.add(new ConvLayer(32, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
+	//network.add(new BatchNormLayer());
 	network.add(new PoolLayer(2, 2));
-	network.add(new DropoutLayer(0.25));
+	//network.add(new DropoutLayer(0.25));
 
 	network.add(new ConvLayer(64, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
+	//network.add(new BatchNormLayer());
 	network.add(new ConvLayer(64, 3, 3, 1, 0, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
+	//network.add(new BatchNormLayer());
 	network.add(new PoolLayer(2, 2));
-	network.add(new DropoutLayer(0.25));
+	//network.add(new DropoutLayer(0.25));
 
 	network.add(new FlattenLayer());
 	network.add(new DenseLayer(512, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
-	network.add(new DropoutLayer(0.25));
+	//network.add(new BatchNormLayer());
+	//network.add(new DropoutLayer(0.25));
 
 	network.add(new DenseLayer(1024, ActivationFunctions::TYPES::RELU));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::RELU));
-	network.add(new BatchNormLayer());
-	network.add(new DropoutLayer(0.5));
+	//network.add(new BatchNormLayer());
+	//network.add(new DropoutLayer(0.5));
 
 	network.add(new DenseLayer(10, ActivationFunctions::TYPES::SOFTMAX));
 	network.add(new ActivationLayer(ActivationFunctions::TYPES::SOFTMAX_CEL));

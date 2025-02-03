@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # MNIST Dataset
-CNN/mnist_train.csv
-CNN/mnist_test.csv
+CUDA CNN/mnist_train.csv
+CUDA CNN/mnist_test.csv

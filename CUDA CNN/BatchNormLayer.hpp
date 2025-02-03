@@ -7,6 +7,8 @@ public:
 	BatchNormLayer() : Layer() {}
 	
 	void initialize(std::vector<size_t> input_shape) {};
-	void forward() {};
+	void forward() {
+		
+	};
 	void backward(const Tensor& gradOutput) {}
 };
